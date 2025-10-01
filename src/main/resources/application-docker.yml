@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: docker,mock
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/zipcodedb
+    username: zipuser
+    password: zippassword
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# Configuração para usar Mock API
+app:
+  external-api:
+    url: ${ZIPCODE_API_URL:http://mock-api:8080}
+    base-path: /ws
