@@ -1,0 +1,110 @@
+{
+  "mappings": [
+    {
+      "id": "cep-valido-sp",
+      "name": "CEP válido - São Paulo",
+      "request": {
+        "method": "GET",
+        "url": "/ws/01001000/json"
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"cep\": \"01001-000\", \"logradouro\": \"Praça da Sé\", \"complemento\": \"lado ímpar\", \"bairro\": \"Sé\", \"localidade\": \"São Paulo\", \"uf\": \"SP\", \"ibge\": \"3550308\", \"gia\": \"1004\", \"ddd\": \"11\", \"siafi\": \"7107\"}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "cep-valido-rj",
+      "name": "CEP válido - Rio de Janeiro",
+      "request": {
+        "method": "GET",
+        "url": "/ws/20010000/json"
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"cep\": \"20010-000\", \"logradouro\": \"Rua da Candelária\", \"complemento\": \"\", \"bairro\": \"Centro\", \"localidade\": \"Rio de Janeiro\", \"uf\": \"RJ\", \"ibge\": \"3304557\", \"gia\": \"\", \"ddd\": \"21\", \"siafi\": \"6001\"}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "cep-com-complemento",
+      "name": "CEP com complemento",
+      "request": {
+        "method": "GET",
+        "url": "/ws/01311000/json"
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"cep\": \"01311-000\", \"logradouro\": \"Avenida Paulista\", \"complemento\": \"até 610\", \"bairro\": \"Bela Vista\", \"localidade\": \"São Paulo\", \"uf\": \"SP\", \"ibge\": \"3550308\", \"gia\": \"1004\", \"ddd\": \"11\", \"siafi\": \"7107\"}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "cep-nao-encontrado",
+      "name": "CEP não encontrado",
+      "request": {
+        "method": "GET",
+        "url": "/ws/99999999/json"
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"erro\": true}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "cep-formato-invalido",
+      "name": "CEP com formato inválido",
+      "request": {
+        "method": "GET",
+        "url": "/ws/123/json"
+      },
+      "response": {
+        "status": 400,
+        "body": "{\"erro\": true, \"mensagem\": \"Formato de CEP inválido\"}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "api-fora-do-ar",
+      "name": "API ViaCEP fora do ar",
+      "request": {
+        "method": "GET",
+        "url": "/ws/00000000/json"
+      },
+      "response": {
+        "status": 500,
+        "body": "{\"erro\": true, \"mensagem\": \"Serviço indisponível\"}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "timeout",
+      "name": "Simular timeout",
+      "request": {
+        "method": "GET",
+        "url": "/ws/88888888/json"
+      },
+      "response": {
+        "status": 200,
+        "fixedDelayMilliseconds": 5000,
+        "body": "{\"cep\": \"88888-888\", \"logradouro\": \"Rua Timeout\", \"complemento\": \"\", \"bairro\": \"Teste\", \"localidade\": \"São Paulo\", \"uf\": \"SP\", \"ibge\": \"3550308\", \"gia\": \"1004\", \"ddd\": \"11\", \"siafi\": \"7107\"}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}

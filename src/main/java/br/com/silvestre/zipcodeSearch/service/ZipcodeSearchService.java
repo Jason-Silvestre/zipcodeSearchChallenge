@@ -6,7 +6,7 @@ import br.com.silvestre.zipcodeSearch.model.ZipcodeSearchResponse;
 import java.util.List;
 
 public interface ZipcodeSearchService {
-    ZipcodeSearchResponse searchZipcode(String cep);
+    ZipcodeSearchResponse searchZipcode(String zipCode);
 
     List<ZipcodeSearchRequest> getSearchHistory();
 }

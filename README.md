@@ -1,212 +1,165 @@
 📮 Zipcode Search API
+
 A RESTful API developed in Java with Spring Boot for ZIP code queries, integrating with the ViaCEP API and storing query history in a PostgreSQL database.
 
---------------------------------
-🚀 FEATURES
+## 🏗 Architecture
 
-🔍 ZIP Code Queries - Integration with ViaCEP API
+[Client] → [Spring Boot App] → [ViaCEP API/WireMock]
+↓
+[PostgreSQL] - Query History Storage
 
-📊 Query History - Storage of all searches performed
 
-✅ Validations - Format verification and ZIP code existence checking
+## 🚀 Features
 
-🐳 Docker Ready - Complete application containerization
+🔍 **ZIP Code Queries** - Integration with ViaCEP API  
+📊 **Query History** - Storage of all searches in PostgreSQL  
+✅ **Validations** - ZIP code format and existence checking  
+🐳 **Docker Ready** - Complete containerization with Docker Compose  
+🎯 **Mock API** - WireMock for development and testing  
+🔄 **Error Handling** - Clear error messages in English  
+☁️ **AWS Ready** - Configurable for cloud deployment
 
-🎯 Mock API - Development environment with simulated responses
+## 📋 Prerequisites
 
-🔄 Error Handling - Clear messages in English for different scenarios
+- Java 17 or higher
+- Docker Desktop (for containerization)
+- Maven (included in wrapper)
+- Postman or similar (for API testing)
 
---------------------------------
-📋 PREREQUISITES
+## 🛠️ Configuration
 
-Java 17 or higher
+### Environment Variables
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SPRING_DATASOURCE_URL` | PostgreSQL URL | `jdbc:postgresql://postgres:5432/zipcodedb` |
+| `ZIPCODE_API_URL` | ViaCEP API URL | `https://viacep.com.br` |
 
-Docker Desktop (for containerization)
+### Ports
+| Service | Port | Description |
+|---------|------|-------------|
+| Application | 8080 | Main API |
+| PostgreSQL | 5432 | Database |
+| WireMock | 8081 | Mock API |
 
-Maven (included in wrapper)
+## 🚀 Quick Start
 
-Postman or similar (for API testing)
-
---------------------------------
-
-🛠️ CONFIGURATIONS
-
-Environment Variables
-Variable	Description	Default Value
-SPRING_DATASOURCE_URL	PostgreSQL URL	jdbc:postgresql://postgres:5432/zipcodedb
-SPRING_DATASOURCE_USERNAME	Database user	zipuser
-SPRING_DATASOURCE_PASSWORD	Database password	zippassword
-ZIPCODE_API_URL	ZIP Code API URL	https://viacep.com.br
-Ports
-Service	Port	Description
-Application	8080	Main API
-PostgreSQL	5432	Database
-WireMock	8081	Mock API
-
---------------------------------
-
-🚀 HOW TO RUN
-
-Docker Compose (Recommended)
-bash
+```bash
 # Clone the repository
 git clone <your-repository>
 cd zipCodeSearch
 
-# Run the startup script
-./start.bat                    # Windows
-# or
-./start.sh                     # Linux/Mac
+# Using scripts
+./start.sh  # Linux/Mac
+./start.bat # Windows
 
 # Or run manually
 docker-compose up --build
 
---------------------------------
-
-📡 API ENDPOINTS
-
+📡 API Endpoints
 Query ZIP Code
-GET /api/ceps/{zipcode}
 
---------------------------------
+GET /api/ceps/{zipcode}
 
 Example request:
 
+bash
 GET http://localhost:8080/api/ceps/01001000
-
---------------------------------
 Success response:
 
 json
-
 {
-"cep": "01001-000",
-"logradouro": "Praça da Sé",
-"complemento": "lado ímpar",
-"bairro": "Sé",
-"localidade": "São Paulo",
-"uf": "SP"
+  "cep": "01001-000",
+  "logradouro": "Praça da Sé",
+  "complemento": "lado ímpar",
+  "bairro": "Sé",
+  "localidade": "São Paulo",
+  "uf": "SP"
 }
-Get History
+
+Get Query History
 http
 GET /api/ceps/history
-
---------------------------------
 Response:
 
 json
-
 [
-{
-"id": 1,
-"cep": "01001000",
-"requestTime": "2024-01-15T10:30:45.123",
-"responseData": "ZipcodeSearchResponse{cep='01001000', ...}"
-}
+  {
+    "id": 1,
+    "cep": "01001000",
+    "requestTime": "2024-01-15T10:30:45.123",
+    "responseData": "ZipcodeSearchResponse{cep='01001000', ...}"
+  }
 ]
-
---------------------------------
-🐛 ERROR HANDLING
-
+🐛 Error Handling
 Invalid ZIP Code Format
-
 json
-
 {
-"error": "invalid_zipcode",
-"message": "Invalid digit quantity",
-"details": "ZIP code must contain exactly 8 numeric digits"
+  "error": "invalid_zipcode",
+  "message": "Invalid digit quantity",
+  "details": "ZIP code must contain exactly 8 numeric digits"
 }
-
---------------------------------
 ZIP Code Not Found
-
 json
-
 {
-"error": "zipcode_not_found",
-"message": "ZIP code not found in database"
+  "error": "zipcode_not_found",
+  "message": "ZIP code not found in database"
 }
-
---------------------------------
 Internal Error
-
 json
-
 {
-"error": "internal_server_error",
-"message": "An unexpected error occurred"
+  "error": "internal_server_error",
+  "message": "An unexpected error occurred"
 }
+🧪 Testing
+With WireMock (Offline)
+bash
+# Test mock directly
+curl http://localhost:8081/ws/01001000/json
 
---------------------------------
-🧪 TESTING WITH POSTMAN
+# View WireMock mappings
+curl http://localhost:8081/__admin/mappings
 
-Collection to Import:
+Postman Collection
+Import the provided collection for full API testing.
 
-json
+---------------------------
+#OPEN POWERSHELL AS ADMINISTRATOR
 
-{
-"info": {
-"name": "Zipcode Search API",
-"description": "Collection to test the ZIP code API",
-"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-},
-"item": [
-{
-"name": "Query Valid ZIP Code",
-"request": {
-"method": "GET",
-"header": [],
-"url": {
-"raw": "http://localhost:8080/api/ceps/01001000",
-"protocol": "http",
-"host": ["localhost"],
-"port": "8080",
-"path": ["api", "ceps", "01001000"]
-}
-}
-},
-{
-"name": "Query Invalid ZIP Code",
-"request": {
-"method": "GET",
-"header": [],
-"url": {
-"raw": "http://localhost:8080/api/ceps/123",
-"protocol": "http",
-"host": ["localhost"],
-"port": "8080",
-"path": ["api", "ceps", "123"]
-}
-}
-},
-{
-"name": "Get History",
-"request": {
-"method": "GET",
-"header": [],
-"url": {
-"raw": "http://localhost:8080/api/ceps/history",
-"protocol": "http",
-"host": ["localhost"],
-"port": "8080",
-"path": ["api", "ceps", "history"]
-}
-}
-}
-]
-}
+#NAVIGATE TO THE PROJECT FOLDER FOR EXAMPLE:
+PS C:\WINDOWS\system32> cd "C:\Users\jason\OneDrive\Desktop\WORKSPACE\PROJETOS\DESAFIO_STEFANINI\zipCodeSearch"
 
---------------------------------
-Postman Environment Configuration:
+#START DOCKER SERVICE
+net start com.docker.service
 
-Variable	Initial Value	Current Value
-base_url	http://localhost:8080	http://localhost:8080
 
---------------------------------
+#RUN WITH TESTS 
+PS C:\Users\jason\OneDrive\Desktop\WORKSPACE\PROJETOS\DESAFIO_STEFANINI\zipCodeSearch> .\mvnw.cmd package -DskipTests   
 
-🐳 USEFUL DOCKER COMMANDS
+#RUN WITHOUT TESTS - FASTER
+PS C:\Users\jason\OneDrive\Desktop\WORKSPACE\PROJETOS\DESAFIO_STEFANINI\zipCodeSearch> .\mvnw.cmd package
 
+# START EVERYTHING
+docker-compose up --build
+
+# TEST VALID ZIPCODE
+curl http://localhost:8081/ws/01001000/json
+
+# TEST ZIPCODE NOT FOUND
+curl http://localhost:8081/ws/99999999/json
+
+# TEST INVALID FORMAT
+curl http://localhost:8081/ws/123/json
+
+# TEST SERVIDOR ERROR SIMULATION
+curl http://localhost:8081/ws/00000000/json
+
+# SEE ALL THE MAPPINGS
+curl http://localhost:8081/__admin/mappings
+
+-------------------------
+
+
+🐳 Useful Docker Commands
 bash
 # Check container status
 docker-compose ps
@@ -222,19 +175,7 @@ docker-compose down -v
 
 # Restart a specific service
 docker-compose restart zipcode-app
-🧪 DEVELOPMENT WITH MOCKS
-For offline development, the application uses WireMock:
-
-bash
-# Access Mock API directly
-curl http://localhost:8081/ws/01001000/json
-
-# View WireMock mappings
-curl http://localhost:8081/__admin/mappings
-
---------------------------------
-🔧 TECHNOLOGIES USED
-
+🔧 Technologies Used
 Java 17 - Programming language
 
 Spring Boot 3 - Main framework
@@ -249,14 +190,21 @@ Maven - Dependency management
 
 JPA/Hibernate - ORM and persistence
 
---------------------------------
+AWS S3 - Cloud Storage (Optional)
 
+📝 Applied Principles
+SOLID Principles Implemented:
+SRP: Separate classes for Client, Service, Repository
 
-📝 APPLIED PRINCIPLES
+OCP: Open for extension via interfaces
 
+LSP: Proper inheritance hierarchy
 
-SOLID - Separation of responsibilities
+ISP: Specific interfaces for each client
 
+DIP: Dependency injection with Spring
+
+Additional Principles:
 RESTful - API design following REST conventions
 
 Containerization - Environment isolation with Docker
@@ -265,12 +213,17 @@ Error Handling - Robust exception handling
 
 Logging - Operation tracking
 
---------------------------------
-👨‍💻 AUTHOR
-Jason Silvestre - github: https://github.com/Jason-Silvestre/zipCodeSearch
+☁️ AWS Configuration (Optional)
+Set these environment variables for AWS integration:
 
---------------------------------
-🎯
-PROJECT STATUS: ✅ COMPLETED AND FUNCTIONAL
+bash
+AWS_ACCESS_KEY=your_access_key
+AWS_SECRET_KEY=your_secret_key
+AWS_REGION=us-east-1
+AWS_S3_BUCKET=zipcode-backups
+👨‍💻 Author
+Jason Silvestre
+GitHub: https://github.com/Jason-Silvestre/zipCodeSearch
+
+🎯 Project Status: ✅ Completed and Functional
 For questions or suggestions, open an issue in the repository!
-

@@ -1,47 +1,41 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15
-    container_name: zipcode-postgres
+  zipcode-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - SKIP_CLEAN=true
+    ports:
+      - "8080:8080"
     environment:
-      POSTGRES_DB: zipcodedb
-      POSTGRES_USER: zipuser
-      POSTGRES_PASSWORD: zippassword
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/zipcodedb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - ZIPCODE_API_URL=https://viacep.com.br
+    depends_on:
+      - postgres
+    networks:
+      - zipcode-network
+
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=zipcodedb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U zipuser -d zipcodedb"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-  mock-api:
-    image: wiremock/wiremock:latest
-    container_name: zipcode-mock-api
-    ports:
-      - "8081:8080"
-    volumes:
-      - ./wiremock/mappings:/home/wiremock/mappings
-      - ./wiremock/__files:/home/wiremock/__files
-    command: --verbose
-
-  zipcode-app:
-    build: .
-    container_name: zipcode-app
-    environment:
-      ZIPCODE_API_URL: http://mock-api:8080
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/zipcodedb
-      SPRING_DATASOURCE_USERNAME: zipuser
-      SPRING_DATASOURCE_PASSWORD: zippassword
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
-      - mock-api
+    networks:
+      - zipcode-network
 
 volumes:
   postgres_data:
+
+networks:
+  zipcode-network:
+    driver: bridge
