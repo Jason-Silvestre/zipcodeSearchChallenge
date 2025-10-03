@@ -11,13 +11,15 @@ public class ZipcodeSearchRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String cep;
+
+    @Column(name = "request_time")
     private LocalDateTime requestTime;
 
     @Column(columnDefinition = "TEXT")
     private String responseData;
 
-    // Getters and Setters
     public ZipcodeSearchRequest() {}
 
     public ZipcodeSearchRequest(String cep, String responseData) {

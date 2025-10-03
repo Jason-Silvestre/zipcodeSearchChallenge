@@ -39,11 +39,9 @@ public class ZipcodeSearchServiceImpl implements ZipcodeSearchService {
         ZipcodeSearchResponse response = zipcodeSearchClient.searchZipcode(cleanedZipcode);
 
         //CHECK IF ZIPCODE EXISTS IN EXTERNAL DATABASE
-
         if(zipcodeNotExistent(response)){
             throw new ZipcodeNotFoundException("Zipcode not found.");
         }
-
 
         //DATABASE LOG
         ZipcodeSearchRequest requestLog = new ZipcodeSearchRequest(cleanedZipcode, response.toString());
@@ -57,10 +55,17 @@ public class ZipcodeSearchServiceImpl implements ZipcodeSearchService {
         return zipcodeSearchRepository.findAllByOrderByRequestTimeDesc();
     }
 
+    @Override
+    public ZipcodeSearchRequest saveSearch(String cep, String responseData) {
+        // CORREÇÃO: Implemente o método corretamente
+        ZipcodeSearchRequest request = new ZipcodeSearchRequest(cep, responseData);
+        return zipcodeSearchRepository.save(request);
+    }
+
     private boolean zipcodeNotExistent(ZipcodeSearchResponse response) {
         return response == null ||
-               response.getCep() == null ||
-               response.getCep().isEmpty() ||
+                response.getCep() == null ||
+                response.getCep().isEmpty() ||
                 (response.getErro() != null && response.getErro());
     }
 

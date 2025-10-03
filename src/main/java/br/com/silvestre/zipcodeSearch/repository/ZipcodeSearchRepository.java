@@ -9,9 +9,6 @@ import java.util.List;
 @Repository
 public interface ZipcodeSearchRepository extends JpaRepository<ZipcodeSearchRequest, Long> {
 
-  // save method heritage from JpaRepository
-  // zipcodeSearchRepository.save(request);
-
     //search ordered history
     List<ZipcodeSearchRequest> findAllByOrderByRequestTimeDesc();
 

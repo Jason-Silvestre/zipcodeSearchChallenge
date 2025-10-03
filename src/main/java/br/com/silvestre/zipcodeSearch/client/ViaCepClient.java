@@ -50,7 +50,7 @@ public class ViaCepClient implements ZipcodeSearchClient {
 
         } catch (RestClientException e) {
             logger.error("Error while consulting ViaCEP API for zipcode: {}", cep, e);
-            throw new ApiIntegrationException("Error communicating with ViaCEP API", e);
+            throw new ApiIntegrationException("Error communicating with ViaCEP API");
         }
     }
 

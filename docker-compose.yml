@@ -1,22 +1,19 @@
-version: '3.8'
-
 services:
   zipcode-app:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - SKIP_CLEAN=true
     ports:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/zipcodedb
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_PASSWORD=mysecretpassword
       - ZIPCODE_API_URL=https://viacep.com.br
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - zipcode-network
 
@@ -25,11 +22,17 @@ services:
     environment:
       - POSTGRES_DB=zipcodedb
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=mysecretpassword
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d zipcodedb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     networks:
       - zipcode-network
 
