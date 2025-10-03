@@ -1,4 +1,4 @@
-package br.com.silvestre.zipcodeSearch.Exception;
+package br.com.silvestre.zipcodeSearch.exception;
 
 import org.springframework.web.client.RestClientException;
 

@@ -1,7 +1,7 @@
 package br.com.silvestre.zipcodeSearch.client;
 
-import br.com.silvestre.zipcodeSearch.Exception.ApiIntegrationException;
-import br.com.silvestre.zipcodeSearch.Exception.InvalidZipCodeFormatException;
+import br.com.silvestre.zipcodeSearch.exception.ApiIntegrationException;
+import br.com.silvestre.zipcodeSearch.exception.InvalidZipCodeFormatException;
 import br.com.silvestre.zipcodeSearch.dto.ViaCepResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

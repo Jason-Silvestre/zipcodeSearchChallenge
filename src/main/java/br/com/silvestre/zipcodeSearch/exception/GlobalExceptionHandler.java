@@ -1,7 +1,4 @@
-package br.com.silvestre.zipcodeSearch.Exception;
-
-import br.com.silvestre.zipcodeSearch.Exception.InvalidZipcodeException;
-import br.com.silvestre.zipcodeSearch.Exception.ZipcodeNotFoundException;
+package br.com.silvestre.zipcodeSearch.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

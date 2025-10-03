@@ -1,9 +1,9 @@
 package br.com.silvestre.zipcodeSearch.controller;
 
-import br.com.silvestre.zipcodeSearch.Exception.ApiIntegrationException;
-import br.com.silvestre.zipcodeSearch.Exception.InvalidZipCodeFormatException;
-import br.com.silvestre.zipcodeSearch.Exception.InvalidZipcodeException;
-import br.com.silvestre.zipcodeSearch.Exception.ZipcodeNotFoundException;
+import br.com.silvestre.zipcodeSearch.exception.ApiIntegrationException;
+import br.com.silvestre.zipcodeSearch.exception.InvalidZipCodeFormatException;
+import br.com.silvestre.zipcodeSearch.exception.InvalidZipcodeException;
+import br.com.silvestre.zipcodeSearch.exception.ZipcodeNotFoundException;
 
 import br.com.silvestre.zipcodeSearch.model.ZipcodeSearchResponse;
 import org.springframework.http.ResponseEntity;
