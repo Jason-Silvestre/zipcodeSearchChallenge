@@ -1,5 +1,7 @@
 package br.com.silvestre.zipcodeSearch.controller;
 
+import br.com.silvestre.zipcodeSearch.Exception.ApiIntegrationException;
+import br.com.silvestre.zipcodeSearch.Exception.InvalidZipCodeFormatException;
 import br.com.silvestre.zipcodeSearch.Exception.InvalidZipcodeException;
 import br.com.silvestre.zipcodeSearch.Exception.ZipcodeNotFoundException;
 
@@ -28,7 +30,7 @@ public class ZipcodeSearchController {
     }
 
     @GetMapping("/{cep}")
-    public ResponseEntity<?> searchZipcode(@PathVariable String cep) {
+    public ResponseEntity<?> searchZipcode(@PathVariable String cep) throws ApiIntegrationException, InvalidZipCodeFormatException {
         try{
             ZipcodeSearchResponse response = zipcodeSearchService.searchZipcode(cep);
             return ResponseEntity.ok(response);

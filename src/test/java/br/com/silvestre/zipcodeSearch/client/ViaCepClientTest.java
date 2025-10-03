@@ -1,5 +1,7 @@
 package br.com.silvestre.zipcodeSearch.client;
 
+import br.com.silvestre.zipcodeSearch.Exception.ApiIntegrationException;
+import br.com.silvestre.zipcodeSearch.Exception.InvalidZipCodeFormatException;
 import br.com.silvestre.zipcodeSearch.dto.ViaCepResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +31,7 @@ class ViaCepClientTest {
     }
 
     @Test
-    void shouldReturnValidCep() {
+    void shouldReturnValidCep() throws ApiIntegrationException, InvalidZipCodeFormatException {
         // Setup
         ViaCepResponseDTO mockResponse = new ViaCepResponseDTO();
         mockResponse.setCep("01001-000");
@@ -40,7 +42,7 @@ class ViaCepClientTest {
                 .thenReturn(mockResponse);
 
         // Execute
-        ViaCepResponseDTO result = viaCepClient.searchZipCode("01001000");
+        ViaCepResponseDTO result = viaCepClient.searchZipcode("01001000");
 
         // Verify
         assertNotNull(result);
@@ -50,7 +52,7 @@ class ViaCepClientTest {
     }
 
     @Test
-    void shouldReturnNullForInvalidCep() {
+    void shouldReturnNullForInvalidCep() throws ApiIntegrationException, InvalidZipCodeFormatException {
         // Setup
         ViaCepResponseDTO mockResponse = new ViaCepResponseDTO();
         mockResponse.setErro(true);
@@ -59,7 +61,7 @@ class ViaCepClientTest {
                 .thenReturn(mockResponse);
 
         // Execute
-        ViaCepResponseDTO result = viaCepClient.searchZipCode("99999999");
+        ViaCepResponseDTO result = viaCepClient.searchZipcode("99999999");
 
         // Verify
         assertNull(result);
@@ -73,7 +75,7 @@ class ViaCepClientTest {
 
         // Execute & Verify
         assertThrows(RuntimeException.class, () -> {
-            viaCepClient.searchZipCode("01001000");
+            viaCepClient.searchZipcode("01001000");
         });
     }
 }

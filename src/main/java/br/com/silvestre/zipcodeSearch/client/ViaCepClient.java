@@ -1,6 +1,10 @@
 package br.com.silvestre.zipcodeSearch.client;
 
+import br.com.silvestre.zipcodeSearch.Exception.ApiIntegrationException;
+import br.com.silvestre.zipcodeSearch.Exception.InvalidZipCodeFormatException;
+import br.com.silvestre.zipcodeSearch.Exception.ZipcodeNotFoundException;
 import br.com.silvestre.zipcodeSearch.dto.ViaCepResponseDTO;
+import br.com.silvestre.zipcodeSearch.model.ZipcodeSearchResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,75 +17,55 @@ import org.springframework.web.client.RestTemplate;
  * RESPONSIBLE FOR SEARCHING DE ZIPCODE INFORMATIONS IN THE EXTERNAL VIACEP API.
  */
 @Component
-public class ViaCepClient {
+public class ViaCepClient implements ZipcodeSearchClient {
 
     private static final Logger logger = LoggerFactory.getLogger(ViaCepClient.class);
 
     private final RestTemplate restTemplate;
+    private final String viaCepUrl;
 
-    @Value("${viacep.url:https://viacep.com.br}")
-    private String viaCepUrl;
-
-    /**
-     * Construtor com injeção de dependência do RestTemplate
-     * @param restTemplate RestTemplate configurado pelo Spring
-     */
-    public ViaCepClient(RestTemplate restTemplate) {
+    public ViaCepClient(RestTemplate restTemplate,
+                        @Value("${viacep.url:https://viacep.com.br}") String viaCepUrl) {
         this.restTemplate = restTemplate;
+        this.viaCepUrl = viaCepUrl;
     }
 
-    /**
-     * Busca informações de um CEP na API ViaCEP
-     *
-     * @param zipCode CEP a ser consultado (apenas números, 8 dígitos)
-     * @return ViaCepResponseDTO com os dados do endereço ou null se não encontrado
-     * @throws RuntimeException se ocorrer erro na comunicação com a API
-     */
-    public ViaCepResponseDTO searchZipCode(String zipCode) {
-        logger.info("Consultando CEP: {}", zipCode);
+    @Override
+    public ZipcodeSearchResponse searchZipcode(String cep) throws ApiIntegrationException, InvalidZipCodeFormatException {
+        validateZipCodeFormat(cep);
+        logger.info("Consulting Zipcode: {}", cep);
 
-        String url = viaCepUrl + "/ws/" + zipCode + "/json/";
+        String url = viaCepUrl + "/ws/" + cep + "/json/";
 
         try {
-            ViaCepResponseDTO response = restTemplate.getForObject(url, ViaCepResponseDTO.class);
+            ViaCepResponseDTO viaCepResponse = restTemplate.getForObject(url, ViaCepResponseDTO.class);
 
-            if (response != null && Boolean.TRUE.equals(response.getErro())) {
-                logger.warn("CEP não encontrado: {}", zipCode);
-                return null;
+            if (viaCepResponse == null || Boolean.TRUE.equals(viaCepResponse.getErro())) {
+                logger.warn("Zipcode not found: {}", cep);
+                throw new ZipcodeNotFoundException("Zipcode not found: " + cep);
             }
 
-            logger.info("CEP encontrado: {} - {}", zipCode, response != null ? response.getLogradouro() : "N/A");
-            return response;
+            logger.info("Zipcode found: {} - {}", cep, viaCepResponse.getLogradouro());
+            return convertToZipcodeSearchResponse(viaCepResponse);
 
         } catch (RestClientException e) {
-            logger.error("Erro ao consultar API ViaCEP para o CEP: {}. Erro: {}", zipCode, e.getMessage());
-            throw new RuntimeException("Erro ao consultar API ViaCEP para o CEP: " + zipCode, e);
+            logger.error("Error while consulting ViaCEP API for zipcode: {}", cep, e);
+            throw new ApiIntegrationException("Error communicating with ViaCEP API", e);
         }
     }
 
-    /**
-     * Método utilitário para validar formato do CEP
-     *
-     * @param zipCode CEP a ser validado
-     * @return true se o CEP é válido (8 dígitos numéricos)
-     */
-    public boolean isValidZipCodeFormat(String zipCode) {
-        return zipCode != null && zipCode.matches("\\d{8}");
+    private void validateZipCodeFormat(String zipCode) throws InvalidZipCodeFormatException {
+        if (zipCode == null || !zipCode.matches("\\d{8}")) {
+            throw new InvalidZipCodeFormatException("Invalid zipcode format: " + zipCode);
+        }
     }
 
-    /**
-     * Método para verificar se a API está disponível
-     *
-     * @return true se a API está respondendo
-     */
-    public boolean isApiAvailable() {
-        try {
-            String testUrl = viaCepUrl + "/ws/01001000/json/";
-            restTemplate.getForObject(testUrl, ViaCepResponseDTO.class);
-            return true;
-        } catch (Exception e) {
-            logger.warn("API ViaCEP não está disponível: {}", e.getMessage());
-            return false;
-        }
+    private ZipcodeSearchResponse convertToZipcodeSearchResponse(ViaCepResponseDTO viaCepResponse) {
+        // Consider using ModelMapper for more complex conversions
+        ZipcodeSearchResponse response = new ZipcodeSearchResponse();
+        response.setCep(viaCepResponse.getCep());
+        response.setLogradouro(viaCepResponse.getLogradouro());
+        response.setErro(viaCepResponse.getErro());
+        return response;
     }
 }

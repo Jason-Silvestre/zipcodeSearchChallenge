@@ -1,5 +1,7 @@
 package br.com.silvestre.zipcodeSearch.ControllerTests;
 
+import br.com.silvestre.zipcodeSearch.Exception.ApiIntegrationException;
+import br.com.silvestre.zipcodeSearch.Exception.InvalidZipCodeFormatException;
 import br.com.silvestre.zipcodeSearch.Exception.InvalidZipcodeException;
 import br.com.silvestre.zipcodeSearch.Exception.ZipcodeNotFoundException;
 import br.com.silvestre.zipcodeSearch.controller.ZipcodeSearchController;
@@ -41,7 +43,7 @@ public class ZipcodeSearchControllerTest {
     }
 
     @Test
-    void shouldReturnZipcodeSuccessfully() {
+    void shouldReturnZipcodeSuccessfully() throws ApiIntegrationException, InvalidZipCodeFormatException {
         // Arrange
         String cep = "01001000";
         when(zipcodeSearchService.searchZipcode(cep)).thenReturn(validResponse);
@@ -56,7 +58,7 @@ public class ZipcodeSearchControllerTest {
     }
 
     @Test
-    void shouldPropagateInvalidZipcodeException() {
+    void shouldPropagateInvalidZipcodeException() throws ApiIntegrationException, InvalidZipCodeFormatException {
         // Arrange
         String invalidCep = "123";
         when(zipcodeSearchService.searchZipcode(invalidCep))
@@ -68,7 +70,7 @@ public class ZipcodeSearchControllerTest {
     }
 
     @Test
-    void shouldPropagateZipcodeNotFoundException() {
+    void shouldPropagateZipcodeNotFoundException() throws ApiIntegrationException, InvalidZipCodeFormatException {
         // Arrange
         String notFoundCep = "00000000";
         when(zipcodeSearchService.searchZipcode(notFoundCep))

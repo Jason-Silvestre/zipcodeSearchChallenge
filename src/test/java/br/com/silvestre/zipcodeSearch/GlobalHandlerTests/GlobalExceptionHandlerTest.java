@@ -2,7 +2,7 @@ package br.com.silvestre.zipcodeSearch.GlobalHandlerTests;
 
 import br.com.silvestre.zipcodeSearch.Exception.InvalidZipcodeException;
 import br.com.silvestre.zipcodeSearch.Exception.ZipcodeNotFoundException;
-import br.com.silvestre.zipcodeSearch.controller.GlobalExceptionHandler;
+import br.com.silvestre.zipcodeSearch.Exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

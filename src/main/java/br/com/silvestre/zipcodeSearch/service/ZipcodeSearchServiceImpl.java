@@ -1,5 +1,7 @@
 package br.com.silvestre.zipcodeSearch.service;
 
+import br.com.silvestre.zipcodeSearch.Exception.ApiIntegrationException;
+import br.com.silvestre.zipcodeSearch.Exception.InvalidZipCodeFormatException;
 import br.com.silvestre.zipcodeSearch.Exception.InvalidZipcodeException;
 import br.com.silvestre.zipcodeSearch.Exception.ZipcodeNotFoundException;
 import br.com.silvestre.zipcodeSearch.model.ZipcodeSearchRequest;
@@ -22,7 +24,7 @@ public class ZipcodeSearchServiceImpl implements ZipcodeSearchService {
         this.zipcodeSearchRepository = zipcodeSearchRepository;
     }
 
-    public ZipcodeSearchResponse searchZipcode(String cep) {
+    public ZipcodeSearchResponse searchZipcode(String cep) throws ApiIntegrationException, InvalidZipCodeFormatException {
 
         //CLEAN ZIPCODE (removes punctuation and special characters)
         String cleanedZipcode = cleanZipcode(cep);

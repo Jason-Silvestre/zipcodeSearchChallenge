@@ -1,4 +1,4 @@
-package br.com.silvestre.zipcodeSearch.controller;
+package br.com.silvestre.zipcodeSearch.Exception;
 
 import br.com.silvestre.zipcodeSearch.Exception.InvalidZipcodeException;
 import br.com.silvestre.zipcodeSearch.Exception.ZipcodeNotFoundException;
