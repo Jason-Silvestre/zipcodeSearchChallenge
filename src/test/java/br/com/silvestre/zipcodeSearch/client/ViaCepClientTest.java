@@ -3,6 +3,7 @@ package br.com.silvestre.zipcodeSearch.client;
 import br.com.silvestre.zipcodeSearch.exception.ApiIntegrationException;
 import br.com.silvestre.zipcodeSearch.exception.InvalidZipCodeFormatException;
 import br.com.silvestre.zipcodeSearch.dto.ViaCepResponseDTO;
+import br.com.silvestre.zipcodeSearch.model.ZipcodeSearchResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +43,7 @@ class ViaCepClientTest {
                 .thenReturn(mockResponse);
 
         // Execute
-        ViaCepResponseDTO result = viaCepClient.searchZipcode("01001000");
+        ZipcodeSearchResponse result = viaCepClient.searchZipcode("01001000");
 
         // Verify
         assertNotNull(result);
@@ -61,7 +62,7 @@ class ViaCepClientTest {
                 .thenReturn(mockResponse);
 
         // Execute
-        ViaCepResponseDTO result = viaCepClient.searchZipcode("99999999");
+        ZipcodeSearchResponse result = viaCepClient.searchZipcode("99999999");
 
         // Verify
         assertNull(result);
